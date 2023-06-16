@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/chess-stats-app/static/css/main.c11b7eb4.css",
+    "main.js": "/chess-stats-app/static/js/main.d0b55623.js",
+    "static/js/787.fb9c7072.chunk.js": "/chess-stats-app/static/js/787.fb9c7072.chunk.js",
+    "static/media/logo.webp": "/chess-stats-app/static/media/logo.40e8ebab09976d54c1a8.webp",
+    "index.html": "/chess-stats-app/index.html",
+    "main.c11b7eb4.css.map": "/chess-stats-app/static/css/main.c11b7eb4.css.map",
+    "main.d0b55623.js.map": "/chess-stats-app/static/js/main.d0b55623.js.map",
+    "787.fb9c7072.chunk.js.map": "/chess-stats-app/static/js/787.fb9c7072.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c11b7eb4.css",
+    "static/js/main.d0b55623.js"
+  ]
+}
