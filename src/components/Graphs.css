@@ -1,0 +1,91 @@
+
+/* This is what allows the graph to be responsive */ 
+canvas{
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.container{
+    position:relative;
+    width: 85%;
+    display: grid;
+    grid-gap: 20px;
+    /* grid-template-columns: 1fr 4fr; */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    height: auto;
+    justify-content:center;
+    padding-bottom: 2%;
+}
+
+.winsGraph{
+    position:relative;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    /* the next 3 lines are for original grid layout */
+    /* grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 2; */
+
+    /* WORKING ON NOW_____the next  are for the responsive grid layout */
+
+    grid-column: span 4;
+    grid-row: span 2;
+    align-self: center;
+
+
+    /* the next 3 lines center the graph vertically */
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+}
+
+.winDonuts{
+    position:relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto;
+
+    /* WORKING ON NOW_____the next two are for the responsive grid layout */
+    grid-column: span 1;
+    grid-row: span 2;
+    align-self: center;
+}
+
+#totalgamesdisplay{
+    width: 85%;
+    aspect-ratio: 1 /1 ;
+    background-color: white;
+    border-radius: 100%;
+    padding: 15px;
+    /* the next two properties are to align the text vertically */
+    display: flex;
+    align-items:center;
+}
+
+#winpercentage{
+    /* margin-top: 10px; */
+    width: 85%;
+    aspect-ratio: 1 / 1;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0 15px;
+}
+
+@media only screen and (max-width: 1300px){
+    .winDonuts{
+        flex-direction: row;
+        grid-column: span 4;
+        grid-gap: 20%;
+        width: 70%;
+    }
+
+    #totalgamesdisplay{
+        margin-right: auto;
+    }
+
+}
