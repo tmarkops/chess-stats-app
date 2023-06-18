@@ -12,8 +12,6 @@ function TotalGamesDisplay({cumulativeData}) {
 
   return (
     <div className='circle'>
-      {/* Total games played:  */}
-      {/* <br/> */}
       <span id='totalgames'>{totalGames}</span>
       <br/>
       {(totalGames===1)? 'game played' : 'games played'} 

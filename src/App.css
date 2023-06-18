@@ -79,3 +79,13 @@ img{
 .logo{
   /* display: grid; */
 }
+
+.timeSeries{
+  padding: 3%;
+  position:relative;
+  width: 80%;
+  background-color: white;
+  border-radius: 10px;
+  margin: 0 auto 0;
+
+}

@@ -1,11 +1,12 @@
 import './App.css';
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SearchBar from './components/SearchBar';
 import Graphs from './components/Graphs';
 import ColorPicker from './components/ColorPicker';
 import GameTypes from './components/GameTypes';
 import logo from './logo.webp';
 import Loader from './components/Loader';
+import TimeSeriesRating from './components/TimeSeriesRating';
 
 function App() {
 
@@ -39,16 +40,10 @@ function App() {
         setForm({...form, username: value})
       }
     if (name === 'fromDate') {
-      let date = new Date(value);
-      date.setTime(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-      setForm({...form, fromDate: date});
+      setForm({...form, fromDate: value});
     }
     if (name === 'toDate') {
-      let date = new Date(value)
-      date.setTime(date.getTime()+date.getTimezoneOffset()*60*1000);
-
-      setForm({...form, toDate: date});
+      setForm({...form, toDate: value});
     }
   }
 
@@ -56,9 +51,7 @@ function App() {
 
   async function changeTimeFormat(e){
     e.preventDefault();
-
     let newTimeFormat = e.target.value;
-
     setFilter({...filter, timeFormat: newTimeFormat});
   }
 
@@ -87,17 +80,25 @@ function App() {
     return data;
   }
 
+  // function that takes date (in string format) as input and returns Date object converted in EST
+
+  const convertTimeToEST = (dateInput) =>{
+    let date = new Date(dateInput);
+    date.setTime(date.getTime()+date.getTimezoneOffset()*60*1000);
+    return date;
+  }
+
   // takes form data as input, and returns all chess data in range (calls getChessData function) 
   async function collectAllData(e){
     e.preventDefault();
-    
+
     if(form.username === ""){
       alert("Please enter a username.");
     } else if(form.fromDate === "" || form.toDate === ""){
       alert("Please enter a valid date range.");
     }else{
-      let begDate = new Date(form.fromDate);
-      let endDate = new Date(form.toDate);
+      let begDate = convertTimeToEST(form.fromDate);
+      let endDate = convertTimeToEST(form.toDate);
       let allData = [];
       const today = new Date();
 
@@ -114,6 +115,11 @@ function App() {
       setCumulativeData(oldState=>({...oldState, rapid: (getCumData(allData,'rapid'))}));
       setCumulativeData(oldState=>({...oldState, blitz: (getCumData(allData,'blitz'))}));
       setCumulativeData(oldState=>({...oldState, daily: (getCumData(allData,'daily'))}));
+      setForm({
+        username: "",
+        fromDate: "",
+        toDate: ""
+      })
     }
     }
 
@@ -175,6 +181,7 @@ function App() {
   const getCumData = (cleanData, timeFormat) => {
     const cumData = {
       white: {
+        games_by_day: [],
         games_by_time: {
             morning: {
             win: 0,
@@ -199,6 +206,7 @@ function App() {
         }
       },
       black: {
+        games_by_day: [],
         games_by_time: {
             morning: {
             win: 0,
@@ -223,6 +231,7 @@ function App() {
         }
       },
       cumulative: {
+        games_by_day: [],
         games_by_time: {
             morning: {
             win: 0,
@@ -255,9 +264,11 @@ function App() {
 
         const gameHour = (curTime.getHours());
 
+        //  to filter by month-day-year-hour etc... I can just call different "getHour or getDate or getMonth" when saving the date in 
+        // the cumulativedate.[color].games_by_day and only the most recent one will be saved
         // cumData.games_by_color[game.color][curResult] ++;
         if (game.game_type === timeFormat){
-          if (curColor === 'white'){
+          // if (curColor === 'white'){
               if (gameHour >= 6 && gameHour <12){
                   cumData[curColor].games_by_time.morning[curResult] ++;
               } else if(gameHour >= 12 && gameHour <17){
@@ -267,26 +278,35 @@ function App() {
               } else {
                   cumData[curColor].games_by_time.night[curResult] ++;
               }
-          } else{
+              // let curDay = curTime.getFullYear() + "/" + (curTime.getMonth() + 1) + "/" + curTime.getDate();
+              // here i can add an if-statement to check if the current chessgame happened on the same day(or other unit) as the
+              // last element of the cumulativedate.[color].games_by_day array and to replace it if it is true 
+              // THIS will avoid the Graph having more than one y-value for each x-value
+          //     let date = new Date(dateInput);
+          // date.setTime(date.getTime()+date.getTimezoneOffset()*60*1000)
+              cumData[curColor].games_by_day.push({[curTime.getTime()]: game.rating, result: curResult});
+          // } else{
+          //     if (gameHour >= 6 && gameHour <12){
+          //         cumData[curColor].games_by_time.morning[curResult] ++;
+          //     } else if(gameHour >= 12 && gameHour <17){
+          //         cumData[curColor].games_by_time.afternoon[curResult] ++;
+          //     } else if(gameHour >= 17 && gameHour <22){
+          //         cumData[curColor].games_by_time.evening[curResult] ++;
+          //     } else {
+          //         cumData[curColor].games_by_time.night[curResult] ++;
+          //     }
+          // }
               if (gameHour >= 6 && gameHour <12){
-                  cumData[curColor].games_by_time.morning[curResult] ++;
+                  cumData.cumulative.games_by_time.morning[curResult] ++;
               } else if(gameHour >= 12 && gameHour <17){
-                  cumData[curColor].games_by_time.afternoon[curResult] ++;
+                  cumData.cumulative.games_by_time.afternoon[curResult] ++;
               } else if(gameHour >= 17 && gameHour <22){
-                  cumData[curColor].games_by_time.evening[curResult] ++;
+                  cumData.cumulative.games_by_time.evening[curResult] ++;
               } else {
-                  cumData[curColor].games_by_time.night[curResult] ++;
+                  cumData.cumulative.games_by_time.night[curResult] ++;
               }
-          }
-          if (gameHour >= 6 && gameHour <12){
-              cumData.cumulative.games_by_time.morning[curResult] ++;
-          } else if(gameHour >= 12 && gameHour <17){
-              cumData.cumulative.games_by_time.afternoon[curResult] ++;
-          } else if(gameHour >= 17 && gameHour <22){
-              cumData.cumulative.games_by_time.evening[curResult] ++;
-          } else {
-              cumData.cumulative.games_by_time.night[curResult] ++;
-          }
+              cumData.cumulative.games_by_day.push({[curTime.getTime()]: game.rating, result: curResult});
+
       }
     }
     
@@ -305,7 +325,7 @@ function App() {
           <h1>Tommy's Cool Chess App</h1>
           <br/>
         </div>
-        <SearchBar handleChange={handleChange} collectAllData={collectAllData}/>
+        <SearchBar handleChange={handleChange} collectAllData={collectAllData} form={form}/>
       
       </div>
       
@@ -315,6 +335,7 @@ function App() {
       </div>
       :
         ("white" in cumulativeData.bullet) ?
+        <>
       <div className='content'>
         <div>
           <GameTypes changeTimeFormat={changeTimeFormat} filter={filter}/>
@@ -325,7 +346,11 @@ function App() {
         <div className='graphs'>
           <Graphs chessgames={chessgames} cumulativeData ={cumulativeData[filter.timeFormat][filter.color]} />
         </div> 
+        <div className='timeSeries'>
+          <TimeSeriesRating cumulativeData={cumulativeData[filter.timeFormat]['cumulative'].games_by_day}/>
+        </div>
       </div>
+      </>
       :null
       }
     </div>
