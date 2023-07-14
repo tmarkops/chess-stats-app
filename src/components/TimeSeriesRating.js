@@ -32,9 +32,7 @@ ChartJS.register(
 // I can also pass the currentColorState and display only white or only black or both 
 // I can also pass the result of each game, and if its a win it will be a green dot vs  red dot
 function TimeSeriesRating({ cumulativeData }) {
-
-    // console.log(cumulativeData.map((game)=>Object.keys(game)[0]));
-
+    
     // data must be in this format: [ {timedata in ms since 1970: value},...]
     
 
@@ -81,9 +79,7 @@ function TimeSeriesRating({ cumulativeData }) {
                 },
                 type: 'time',
                 time: {
-                    // unit: 'millisecond',
                     format: 'timeFormat',
-                    // round: 'second'
                 },
                 ticks: {
                     source: 'auto'
